@@ -8,12 +8,12 @@ VALUES
 ("Marketing");
 
 -- need to seed roles table
-INSERT INTO roles (job_title, department, salary)
+INSERT INTO roles (title, salary)
 VALUES
-("Accountant", "Accounting", 60000),
-("Graphic designer", "Marketing", 55000),
-("HR director", "HR", 85000);
+("Accountant", 60000),
+("Graphic designer", 55000),
+("HR director", 85000);
 
 -- need to seed employees table
-INSERT INTO employees (first_name, last_name, job_title, department, salary, manager)
-VALUES ("Jane", "Smith", "Market analyst", "Marketing", 68000, "Rose Smith");
+INSERT INTO employees (first_name, last_name)
+VALUES ("Jane", "Smith");

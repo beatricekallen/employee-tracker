@@ -14,11 +14,15 @@ async function findAllDepartments() {
 }
 
 async function findAllRoles() {
-  return db.query("SELECT * FROM roles;");
+  return db.query(
+    "SELECT roles.id, roles.title, roles.salary, departments.id FROM roles LEFT JOIN departments WHERE roles.department_id = departments.id;"
+  );
 }
 
 async function findAllEmployees() {
-  return db.query("SELECT * FROM employees;");
+  return db.query(
+    "SELECT employees.id, employees.first_name, employees.last_name, employees.role_id, employees.manager_id FROM employees LEFT JOIN roles WHERE employees.role_id = roles.id;"
+  );
 }
 
 async function createDepartment(department) {
