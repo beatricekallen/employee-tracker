@@ -7,7 +7,7 @@ const {
   createRole,
   createEmployee,
   editEmployeeRole,
-} = require("./server");
+} = require("./app");
 const cTable = require("console.table");
 
 // reprint menu after each operation, use console.table to display tables, ability to quit out of app needs to be in menu
@@ -67,7 +67,7 @@ async function mainMenu() {
     case "ADD_A_ROLE":
       return addRole();
     case "ADD_AN_EMPLOYEE":
-      return addEmployee;
+      return addEmployee();
     case "UPDATE_AN_EMPLOYEE_ROLE":
       return updateEmployeeRole();
     case "EXIT":
@@ -121,8 +121,9 @@ async function addDepartment() {
       message: "What is the name of the department you'd like to add?",
     },
   ]);
+  console.log(response.department);
+  const createDepartmentRows = await createDepartment(response.department);
 
-  const [createDepartmentRows] = await createDepartment(response);
   console.log("Department added.");
   console.table(findAllDepartments());
   mainMenu();
@@ -132,7 +133,7 @@ async function addRole() {
   const response = await prompt([
     {
       type: "input",
-      name: "role",
+      name: "title",
       message: "What is the name of the role you'd like to add?",
     },
     {
@@ -146,15 +147,22 @@ async function addRole() {
       message: "What is the department of the role you'd like to add?",
     },
   ]);
+  const salaryInt = parseInt(response.salary);
+  console.log(response.title, salaryInt, response.department);
 
-  const [createRoleRows] = await createRole(response);
+  const [createRoleRows] = await createRole(
+    response.title,
+    salaryInt
+    // response.department
+  );
   console.log("Role added.");
   console.table(findAllRoles());
   mainMenu();
 }
 
 async function addEmployee() {
-  const { first_name, last_name, job_title, manager } = await prompt([
+  // need to have job_title, manager
+  const response = await prompt([
     {
       type: "input",
       name: "firstName",
@@ -165,18 +173,20 @@ async function addEmployee() {
       name: "lastName",
       message: "What is the last name of the employee you'd like to add?",
     },
-    {
-      type: "input",
-      name: "jobTitle",
-      message: "What is the job title of the employee you'd like to add?",
-    },
-    {
-      type: "input",
-      name: "manager",
-      message: "Who is the manager of the employee you'd like to add?",
-    },
+    // {
+    //   type: "input",
+    //   name: "jobTitle",
+    //   message: "What is the job title of the employee you'd like to add?",
+    // },
+    // {
+    //   type: "input",
+    //   name: "manager",
+    //   message: "Who is the manager of the employee you'd like to add?",
+    // },
   ]);
-  createEmployee(first_name, last_name, job_title, manager);
+  //need to have job_title, manager
+  console.log(response.firstName, response.lastName);
+  createEmployee(response.firstName, response.lastName);
   console.log("Employee added.");
   console.table(findAllEmployees());
   mainMenu();

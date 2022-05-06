@@ -15,8 +15,7 @@ async function findAllDepartments() {
 
 async function findAllRoles() {
   return db.query(
-    //roles.title,
-    "SELECT role.id, department.department_name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id;"
+    "SELECT role.id, department.name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id;"
   );
 }
 
@@ -27,21 +26,29 @@ async function findAllEmployees() {
 }
 
 async function createDepartment(name) {
-  return db.query("INSERT INTO department VALUES ?;", name);
+  return db.query("INSERT INTO DEPARTMENT (name) VALUES (?);", name);
 }
 
-async function createRole(role) {
-  return db.query("INSERT INTO role SET ?;", role);
+async function createRole(title, salary, department) {
+  return db.query(
+    "INSERT INTO ROLE (title, salary) VALUES (?, ?) INTO DEPARTMENT (name) VALUE (?);",
+    [title, salary, department]
+  );
 }
 
-async function createEmployee(employee) {
-  return db.query("INSERT INTO employee SET ?;", employee);
+async function createEmployee(firstName, lastName) {
+  return db.query(
+    "INSERT INTO EMPLOYEE (first_name, last_name) VALUES (?, ?);",
+    [firstName, lastName]
+  );
 }
 
-async function editEmployeeRole(employee, role) {
-  return db.query("UPDATE employee SET ? WHERE employee = ?;", [
-    first_name,
-    last_name,
+//TODO: probably doesn't work
+async function editEmployeeRole(firstName, lastName, role) {
+  return db.query("UPDATE EMPLOYEE SET first_name = ? WHERE employee = ?;", [
+    firstName,
+    lastName,
+    role,
   ]);
 }
 
