@@ -35,15 +35,15 @@ async function createRole(title, salary, department) {
     [title, salary, department]
   );
 }
-
-async function createEmployee(firstName, lastName) {
+//TODO: need to work out how to add role to role table and add manager
+async function createEmployee(firstName, lastName, role, manager) {
   return db.query(
     "INSERT INTO EMPLOYEE (first_name, last_name) VALUES (?, ?);",
     [firstName, lastName]
   );
 }
 
-//TODO: probably doesn't work
+//TODO: need to work out how to add role to role table
 async function editEmployeeRole(firstName, lastName, role) {
   return db.query("UPDATE EMPLOYEE SET first_name = ? WHERE employee = ?;", [
     firstName,

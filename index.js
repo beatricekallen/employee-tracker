@@ -53,7 +53,6 @@ async function mainMenu() {
   });
 
   const choice = response.choice;
-  console.log(choice, response.choice);
 
   switch (choice) {
     case "VIEW_DEPARTMENTS":
@@ -76,13 +75,11 @@ async function mainMenu() {
 }
 
 async function viewAllDepartments() {
-  console.log("working");
   const [rows] = await findAllDepartments();
   const departments = rows;
 
-  departments.forEach((department) => {
-    console.table(department.name);
-  });
+  console.table(departments);
+
   mainMenu();
 }
 
@@ -90,9 +87,7 @@ async function viewAllRoles() {
   const [rows] = await findAllRoles();
   const roles = rows;
 
-  roles.forEach((role) => {
-    console.table(role.title, role.department_id, role.salary);
-  });
+  console.table(rows);
   mainMenu();
 }
 
@@ -100,16 +95,8 @@ async function viewAllEmployees() {
   const [rows] = await findAllEmployees();
   const employees = rows;
 
-  employees.forEach((employee) => {
-    console.table(
-      employee.first_name,
-      employee.last_name,
-      employee.job_title,
-      employee.department,
-      employee.salary,
-      employee.manager
-    );
-  });
+  console.table(employees);
+
   mainMenu();
 }
 
@@ -121,11 +108,14 @@ async function addDepartment() {
       message: "What is the name of the department you'd like to add?",
     },
   ]);
-  console.log(response.department);
+
   const createDepartmentRows = await createDepartment(response.department);
 
-  console.log("Department added.");
-  console.table(findAllDepartments());
+  console.log("Department added.\n");
+
+  const [departmentRows] = await findAllDepartments();
+
+  console.table(departmentRows);
   mainMenu();
 }
 
@@ -152,16 +142,18 @@ async function addRole() {
 
   const [createRoleRows] = await createRole(
     response.title,
-    salaryInt
-    // response.department
+    salaryInt,
+    response.department
   );
-  console.log("Role added.");
-  console.table(findAllRoles());
+  console.log("Role added.\n");
+
+  const [roleRows] = await findAllRoles();
+
+  console.table(roleRows);
   mainMenu();
 }
 
 async function addEmployee() {
-  // need to have job_title, manager
   const response = await prompt([
     {
       type: "input",
@@ -173,22 +165,27 @@ async function addEmployee() {
       name: "lastName",
       message: "What is the last name of the employee you'd like to add?",
     },
-    // {
-    //   type: "input",
-    //   name: "jobTitle",
-    //   message: "What is the job title of the employee you'd like to add?",
-    // },
-    // {
-    //   type: "input",
-    //   name: "manager",
-    //   message: "Who is the manager of the employee you'd like to add?",
-    // },
+    {
+      type: "input",
+      name: "jobTitle",
+      message: "What is the job title of the employee you'd like to add?",
+    },
+    {
+      type: "input",
+      name: "manager",
+      message: "Who is the manager of the employee you'd like to add?",
+    },
   ]);
-  //need to have job_title, manager
-  console.log(response.firstName, response.lastName);
-  createEmployee(response.firstName, response.lastName);
-  console.log("Employee added.");
-  console.table(findAllEmployees());
+
+  createEmployee(
+    response.firstName,
+    response.lastName,
+    response.jobTitle,
+    response.manager
+  );
+  console.log("Employee added.\n");
+  const [employeeRows] = await findAllEmployees();
+  console.table(employeeRows);
   mainMenu();
 }
 
@@ -213,8 +210,9 @@ async function updateEmployeeRole() {
     },
   ]);
   editEmployeeRole(first_name, last_name, job_title);
-  console.log("Employee role updated.");
-  console.table(findAllEmployees());
+  console.log("Employee role updated.\n");
+  const [employeeRows] = await findAllEmployees();
+  console.table(employeeRows);
   mainMenu();
 }
 
