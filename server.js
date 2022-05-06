@@ -10,35 +10,39 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 async function findAllDepartments() {
-  return db.query("SELECT * FROM departments;");
+  return db.query("SELECT * FROM department;");
 }
 
 async function findAllRoles() {
   return db.query(
-    "SELECT roles.id, roles.title, roles.salary, departments.id FROM roles LEFT JOIN departments WHERE roles.department_id = departments.id;"
+    //roles.title,
+    "SELECT role.id, department.department_name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id;"
   );
 }
 
 async function findAllEmployees() {
   return db.query(
-    "SELECT employees.id, employees.first_name, employees.last_name, employees.role_id, employees.manager_id FROM employees LEFT JOIN roles WHERE employees.role_id = roles.id;"
+    "SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, employee.manager_id FROM employee LEFT JOIN role ON employee.role_id = role.id;"
   );
 }
 
-async function createDepartment(department) {
-  return db.query("INSERT INTO departments SET ?", department);
+async function createDepartment(name) {
+  return db.query("INSERT INTO department VALUES ?;", name);
 }
 
 async function createRole(role) {
-  return db.query("INSERT INTO roles SET ?", role);
+  return db.query("INSERT INTO role SET ?;", role);
 }
 
 async function createEmployee(employee) {
-  return db.query("INSERT INTO employees SET ?", employee);
+  return db.query("INSERT INTO employee SET ?;", employee);
 }
 
 async function editEmployeeRole(employee, role) {
-  return db.query("UPDATE employees SET ? WHERE employee = ?", employee, role);
+  return db.query("UPDATE employee SET ? WHERE employee = ?;", [
+    first_name,
+    last_name,
+  ]);
 }
 
 db.connect((err) => {

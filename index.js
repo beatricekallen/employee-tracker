@@ -14,46 +14,76 @@ const cTable = require("console.table");
 async function mainMenu() {
   const response = await prompt({
     type: "list",
-    name: "managerName",
+    name: "choice",
     message: "What would you like to do?",
     choices: [
-      "View all departments",
-      "View all roles",
-      "View all employees",
-      "Add a department",
-      "Add a role",
-      "Add an employee",
-      "Update an employee role",
-      "Exit",
+      {
+        name: "View all departments",
+        value: "VIEW_DEPARTMENTS",
+      },
+      {
+        name: "View all roles",
+        value: "VIEW_ROLES",
+      },
+      {
+        name: "View all employees",
+        value: "VIEW_EMPLOYEES",
+      },
+      {
+        name: "Add a department",
+        value: "ADD_A_DEPARTMENT",
+      },
+      {
+        name: "Add a role",
+        value: "ADD_A_ROLE",
+      },
+      {
+        name: "Add an employee",
+        value: "ADD_AN_EMPLOYEE",
+      },
+      {
+        name: "Update an employee role",
+        value: "UPDATE_AN_EMPLOYEE_ROLE",
+      },
+      {
+        name: "Exit",
+        value: "EXIT",
+      },
     ],
   });
-  switch (response) {
-    case "View all departments":
+
+  const choice = response.choice;
+  console.log(choice, response.choice);
+
+  switch (choice) {
+    case "VIEW_DEPARTMENTS":
       return viewAllDepartments();
-    case "View all roles":
+    case "VIEW_ROLES":
       return viewAllRoles();
-    case "View all employees":
+    case "VIEW_EMPLOYEES":
       return viewAllEmployees();
-    case "Add a department":
+    case "ADD_A_DEPARTMENT":
       return addDepartment();
-    case "Add a role":
+    case "ADD_A_ROLE":
       return addRole();
-    case "Add an employee":
+    case "ADD_AN_EMPLOYEE":
       return addEmployee;
-    case "Update an employee role":
+    case "UPDATE_AN_EMPLOYEE_ROLE":
       return updateEmployeeRole();
-    case "Exit":
+    case "EXIT":
       return quit();
   }
 }
 
 async function viewAllDepartments() {
+  console.log("working");
   const [rows] = await findAllDepartments();
   const departments = rows;
 
   departments.forEach((department) => {
-    console.table(department.department_name);
+    console.table(department.name);
   });
+  mainMenu();
 }
 
 async function viewAllRoles() {
@@ -61,8 +91,9 @@ async function viewAllRoles() {
   const roles = rows;
 
   roles.forEach((role) => {
-    console.table(role.job_title, role.department, role.salary);
+    console.table(role.title, role.department_id, role.salary);
   });
+  mainMenu();
 }
 
 async function viewAllEmployees() {
@@ -79,6 +110,7 @@ async function viewAllEmployees() {
       employee.manager
     );
   });
+  mainMenu();
 }
 
 async function addDepartment() {
@@ -93,6 +125,7 @@ async function addDepartment() {
   const [createDepartmentRows] = await createDepartment(response);
   console.log("Department added.");
   console.table(findAllDepartments());
+  mainMenu();
 }
 
 async function addRole() {
@@ -117,6 +150,7 @@ async function addRole() {
   const [createRoleRows] = await createRole(response);
   console.log("Role added.");
   console.table(findAllRoles());
+  mainMenu();
 }
 
 async function addEmployee() {
@@ -145,6 +179,7 @@ async function addEmployee() {
   createEmployee(first_name, last_name, job_title, manager);
   console.log("Employee added.");
   console.table(findAllEmployees());
+  mainMenu();
 }
 
 async function updateEmployeeRole() {
@@ -170,6 +205,7 @@ async function updateEmployeeRole() {
   editEmployeeRole(first_name, last_name, job_title);
   console.log("Employee role updated.");
   console.table(findAllEmployees());
+  mainMenu();
 }
 
 function quit() {
