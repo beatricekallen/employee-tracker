@@ -29,8 +29,8 @@ async function createRole(title, salary, department_id) {
 
 async function createEmployee(firstName, lastName, role, manager) {
   return db.query(
-    "INSERT INTO EMPLOYEE (first_name, last_name) VALUES (?, ?);",
-    [firstName, lastName]
+    "INSERT INTO EMPLOYEE (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?);",
+    [firstName, lastName, role, manager]
   );
 }
 

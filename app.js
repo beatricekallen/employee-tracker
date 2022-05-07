@@ -143,7 +143,6 @@ async function addRole() {
     },
   ]);
   const salaryInt = parseInt(response.salary);
-  console.log(response.title, salaryInt, response.choice);
 
   const [createRoleRows] = await createRole(
     response.title,
@@ -156,9 +155,23 @@ async function addRole() {
 }
 
 async function addEmployee() {
-  const response = await prompt([
+  const [employeeRows] = await findAllEmployees();
+
+  const employeeChoices = employeeRows.map((employee) => ({
+    name: `${employee.first_name} ${employee.last_name}`,
+    value: employee.id,
+  }));
+
+  const [roleRows] = await findAllRoles();
+
+  const roleChoices = roleRows.map((role) => ({
+    name: role.title,
+    value: role.id,
+  }));
+
+  const { firstName, lastName, roleChoice, employeeChoice } = await prompt([
     {
-      type: "choice",
+      type: "input",
       name: "firstName",
       message: "What is the first name of the employee you'd like to add?",
     },
@@ -168,23 +181,20 @@ async function addEmployee() {
       message: "What is the last name of the employee you'd like to add?",
     },
     {
-      type: "input",
-      name: "jobTitle",
+      type: "list",
+      name: "roleChoice",
       message: "What is the job title of the employee you'd like to add?",
+      choices: roleChoices,
     },
     {
-      type: "input",
-      name: "manager",
+      type: "list",
+      name: "employeeChoice",
       message: "Who is the manager of the employee you'd like to add?",
+      choices: employeeChoices,
     },
   ]);
 
-  createEmployee(
-    response.firstName,
-    response.lastName,
-    response.jobTitle,
-    response.manager
-  );
+  createEmployee(firstName, lastName, roleChoice, employeeChoice);
   console.log("Employee added.\n");
   viewAllEmployees();
 }
