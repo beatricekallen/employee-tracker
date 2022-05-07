@@ -138,7 +138,7 @@ async function addRole() {
     {
       type: "list",
       name: "choice",
-      message: "What is the name of the department you'd like to add?",
+      message: "What is the department this role is in?",
       choices,
     },
   ]);
