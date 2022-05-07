@@ -11,6 +11,6 @@ view and manage the departments, roles, and employees at their company. The user
 - add an employee; and
 - update an employee role.
 
-Link to walkthrough video:
+Link to walkthrough video: https://drive.google.com/file/d/1d4YIQt0GnyqoPTHydBLoYyHBxrvdAwik/view?usp=sharing
 
 Link to GitHub repository: https://github.com/beatricekallen/employee-tracker
