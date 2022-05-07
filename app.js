@@ -1,13 +1,4 @@
-const express = require("express");
-const PORT = process.env.PORT || 3001;
-const app = express();
-const mysql = require("mysql2");
-const cTable = require("console.table");
-
 const db = require("./connection");
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 
 async function findAllDepartments() {
   return db.query("SELECT * FROM department;");
@@ -15,7 +6,7 @@ async function findAllDepartments() {
 
 async function findAllRoles() {
   return db.query(
-    "SELECT role.id, department.name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id;"
+    "SELECT role.id, role.title, role.salary, department.name, role.department_id FROM role LEFT JOIN department ON role.department_id = department.id;"
   );
 }
 
@@ -29,13 +20,13 @@ async function createDepartment(name) {
   return db.query("INSERT INTO DEPARTMENT (name) VALUES (?);", name);
 }
 
-async function createRole(title, salary, department) {
+async function createRole(title, salary, department_id) {
   return db.query(
-    "INSERT INTO ROLE (title, salary) VALUES (?, ?) INTO DEPARTMENT (name) VALUE (?);",
-    [title, salary, department]
+    "INSERT INTO ROLE (title, salary, department_id) VALUES (?, ?, ?);",
+    [title, salary, department_id]
   );
 }
-//TODO: need to work out how to add role to role table and add manager
+
 async function createEmployee(firstName, lastName, role, manager) {
   return db.query(
     "INSERT INTO EMPLOYEE (first_name, last_name) VALUES (?, ?);",
@@ -43,12 +34,10 @@ async function createEmployee(firstName, lastName, role, manager) {
   );
 }
 
-//TODO: need to work out how to add role to role table
-async function editEmployeeRole(firstName, lastName, role) {
-  return db.query("UPDATE EMPLOYEE SET first_name = ? WHERE employee = ?;", [
-    firstName,
-    lastName,
-    role,
+async function editEmployeeRole(roleId, employeeId) {
+  return db.query("UPDATE EMPLOYEE SET role_id = ? WHERE id = ?;", [
+    roleId,
+    employeeId,
   ]);
 }
 

@@ -113,13 +113,17 @@ async function addDepartment() {
 
   console.log("Department added.\n");
 
-  const [departmentRows] = await findAllDepartments();
-
-  console.table(departmentRows);
-  mainMenu();
+  viewAllDepartments();
 }
 
 async function addRole() {
+  const [departmentRows] = await findAllDepartments();
+
+  const choices = departmentRows.map((department) => ({
+    name: department.name,
+    value: department.id,
+  }));
+
   const response = await prompt([
     {
       type: "input",
@@ -132,31 +136,29 @@ async function addRole() {
       message: "What is the salary for the role you'd like to add?",
     },
     {
-      type: "input",
-      name: "department",
-      message: "What is the department of the role you'd like to add?",
+      type: "list",
+      name: "choice",
+      message: "What is the name of the department you'd like to add?",
+      choices,
     },
   ]);
   const salaryInt = parseInt(response.salary);
-  console.log(response.title, salaryInt, response.department);
+  console.log(response.title, salaryInt, response.choice);
 
   const [createRoleRows] = await createRole(
     response.title,
     salaryInt,
-    response.department
+    response.choice
   );
   console.log("Role added.\n");
 
-  const [roleRows] = await findAllRoles();
-
-  console.table(roleRows);
-  mainMenu();
+  viewAllRoles();
 }
 
 async function addEmployee() {
   const response = await prompt([
     {
-      type: "input",
+      type: "choice",
       name: "firstName",
       message: "What is the first name of the employee you'd like to add?",
     },
@@ -184,36 +186,42 @@ async function addEmployee() {
     response.manager
   );
   console.log("Employee added.\n");
-  const [employeeRows] = await findAllEmployees();
-  console.table(employeeRows);
-  mainMenu();
+  viewAllEmployees();
 }
 
 async function updateEmployeeRole() {
-  const { first_name, last_name, job_title } = await prompt([
+  const [employeeRows] = await findAllEmployees();
+
+  const employeeChoices = employeeRows.map((employee) => ({
+    name: `${employee.first_name} ${employee.last_name}`,
+    value: employee.id,
+  }));
+
+  const [roleRows] = await findAllRoles();
+
+  const roleChoices = roleRows.map((role) => ({
+    name: role.title,
+    value: role.id,
+  }));
+
+  const { employeeChoice, roleChoice } = await prompt([
     {
-      type: "input",
-      name: "firstName",
+      type: "list",
+      name: "employeeChoice",
       message:
-        "What is the first name of the employee whose role you'd like to update?",
+        "What is the name of the employee whose role you'd like to update?",
+      choices: employeeChoices,
     },
     {
-      type: "input",
-      name: "lastName",
-      message:
-        "What is the last name of the employee whose role you'd like to update?",
-    },
-    {
-      type: "input",
-      name: "role",
+      type: "list",
+      name: "roleChoice",
       message: "What is the new role for this employee?",
+      choices: roleChoices,
     },
   ]);
-  editEmployeeRole(first_name, last_name, job_title);
+  editEmployeeRole(roleChoice, employeeChoice);
   console.log("Employee role updated.\n");
-  const [employeeRows] = await findAllEmployees();
-  console.table(employeeRows);
-  mainMenu();
+  viewAllEmployees();
 }
 
 function quit() {
